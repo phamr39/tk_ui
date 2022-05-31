@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import ModalShare from '../../components/Share';
 import { useSelector } from 'react-redux';
 import Notify from '../../components/Notify';
+import { utils, providers } from 'near-api-js';
 
 const Lottery = () => {
     const router = useRouter();
@@ -25,11 +26,13 @@ const Lottery = () => {
     const [currentGame, setCurrentGame] = useState();
     const [previousGame, setPreviousGame] = useState();
     const [isOwner, setIsOwner] = useState(false);
+    const [currentUserTicket, setCurentUserTicket] = useState(100);
+    const [choosenNumber, setChoosenNumber] = useState('');
 
     const wallet = useSelector((state) => state.wallet);
 
     const FEE_PERCENT = 0.9;
-
+    const DEFAULT_TICKET_PRICE = "1";
     const onCloseSnack = () => {
         setOpenSnack(false);
     };
@@ -56,7 +59,66 @@ const Lottery = () => {
         }
     }, [wallet]);
 
+    useEffect(() => {
+        if (currentGame?.id) {
+            getUserCurrentTicket(currentGame.id);
+        }
+    }, [currentGame])
+
+    useEffect(() => {
+        const { nearConfig, walletConnection } = wallet;
+        let userId = walletConnection.getAccountId();
+        if (router.query.transactionHashes) {
+            const rpcConnector = new providers.JsonRpcProvider(nearConfig.nodeUrl);
+            rpcConnector.txStatus(router.query.transactionHashes, userId)
+                .then((rpcData) => {
+                    if (rpcData?.status?.SuccessValue) {
+                        onShowResult({
+                            type: 'success',
+                            msg: 'Your ticket has been bought successfully. You will be redirected after 3 seconds.',
+                        });
+                    } else {
+                        onShowResult({
+                            type: 'error',
+                            msg: 'Something went wrong, please try again. You will be redirected after 3 seconds.',
+                        });
+                    }
+                    setTimeout(() => {
+                        router.push('/lottery');
+                    }, 3000)
+                })
+                .catch((err) => {
+                    onShowResult({
+                        type: 'error',
+                        msg: String(err),
+                    });
+                });
+        }
+    }, [router.query]);
+
+    const getUserCurrentTicket = (id) => {
+        const { contract, walletConnection } = wallet;
+        const userId = walletConnection.getAccountId();
+        contract
+            ?.get_user_ticket?.({
+                id: id,
+                user_id: userId
+            })
+            .then((data) => {
+                setOpenLoading(false);
+                if (data) {
+                    if (data < 100 && data >= 0) {
+                        setCurentUserTicket(data);
+                    }
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
     const getCurrentGame = () => {
+        setOpenLoading(true);
         const { contract } = wallet;
         contract
             ?.get_current_game?.({})
@@ -65,6 +127,7 @@ const Lottery = () => {
                     let fee = data.fee / 1e+24;
                     let reward = fee * FEE_PERCENT * data.participants_number;
                     let crGame = {
+                        id: data.id,
                         startTime: timeStampToDate(data.start_at),
                         endTime: timeStampToDate(data.end_at),
                         winnerName: !!data.end_at ? data.winners : "This game has not finished!",
@@ -76,6 +139,7 @@ const Lottery = () => {
                 }
             })
             .catch((err) => {
+                setOpenLoading(false);
                 console.log(err);
             });
     }
@@ -121,6 +185,40 @@ const Lottery = () => {
         return timestamp;
     }
 
+    const onBuyTicket = (number) => {
+        if (number === '' || number < 0 || number >= 100) {
+            onShowResult({
+                type: 'error',
+                msg: 'Ticket number must be >= 0 and < 100.',
+            });
+        } else if (!currentGame) {
+            onShowResult({
+                type: 'error',
+                msg: 'There is no game available to play.',
+            });
+        } else {
+            const { contract } = wallet;
+            setOpenLoading(true);
+            const ticket_price = utils.format.parseNearAmount(DEFAULT_TICKET_PRICE);
+            contract
+                ?.buy_ticket?.({
+                    num: parseInt(number),
+                }, 100000000000000,
+                    ticket_price)
+                .then((data) => {
+                    if (data) {
+                        onShowResult({
+                            type: 'success',
+                            msg: 'Your ticket has been bought',
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    }
+
     const onExportDateTime = (datetime) => {
         try {
             const timestamp = parseFloat(datetime);
@@ -160,7 +258,7 @@ const Lottery = () => {
         <>
             <Notify openLoading={openLoading} openSnack={openSnack} alertType={alertType} snackMsg={snackMsg} onClose={onCloseSnack} />
             <div className={styles.root}>
-                <div className={styles.label_create}>Lottery Game: Winner takes all!</div>
+                <div className={styles.label_create}>Lottery Game: Winners takes all!</div>
                 <br />
                 <div className={styles.text_description}>
                     <div>Your will deposite 1 NEAR for each number, each user can buy only one number in each lottery game.</div>
@@ -175,26 +273,39 @@ const Lottery = () => {
                     </div>
                 ) : (
                     <div>
-                        <div className={styles.label}>
-                            <div className={styles.label_title}>Get your number in the next game</div>
-                        </div>
-                        <div className={styles.line} />
-                        <br />
-                        <div className={styles.search_row}>
-                            <div className={styles.search_area}>
-                                <input
-                                    placeholder={'Type your number which you choose, value must be in range 00 to 99'}
-                                    className={styles.choosen_number}
-                                    value={choosenValue}
-                                    onChange={(e) => {
-                                        setChoosenValue(e.currentTarget.value);
-                                    }}
-                                />
+                        {(currentUserTicket !== 100) ? (
+                            <div>
+                                <div className={styles.label}>
+                                    <div className={styles.label_title}>Your number in the next game</div>
+                                </div>
+                                <div className={styles.line} />
+                                <div className={styles.current_game_info}>Please wait the host finish the game to see the result</div>
+                                <div className={styles.ticket_number}>{currentUserTicket}</div>
                             </div>
-                            <button className={styles.button_search} onClick={() => onSearchEvent(searchEventValue)}>
-                                Buy
-                            </button>
-                        </div>
+                        ) : (
+                            <div>
+                                <div className={styles.label}>
+                                    <div className={styles.label_title}>Get your number in the next game</div>
+                                </div>
+                                <div className={styles.line} />
+                                <br />
+                                <div className={styles.search_row}>
+                                    <div className={styles.search_area}>
+                                        <input
+                                            placeholder={'Type your number which you choose, value must be in range 00 to 99'}
+                                            className={styles.choosen_number}
+                                            value={choosenNumber}
+                                            onChange={(e) => {
+                                                setChoosenNumber(e.currentTarget.value);
+                                            }}
+                                        />
+                                    </div>
+                                    <button className={styles.button_search} onClick={() => onBuyTicket(choosenNumber)}>
+                                        Buy
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
                 <div className={styles.label}>
@@ -228,7 +339,7 @@ const Lottery = () => {
                     <div>
                         <div className={styles.current_game_info}>Opened At: {previousGame.startTime} </div>
                         <div className={styles.current_game_info}>Closed At: {previousGame.endTime} </div>
-                        <div className={styles.current_game_info}>Winner Name: {previousGame.winnerName} {currentUser == previousGame.winnerName ? '(You)' : ''}</div>
+                        <div className={styles.current_game_info}>Winner Name: {previousGame.winnerName}</div>
                         <div className={styles.current_game_info}>Winner Number: {previousGame.winnerNumber} </div>
                         <div className={styles.current_game_info}>Total Reward: {previousGame.totalReward} NEAR </div>
                         <div className={styles.current_game_info}>Total Participants: {previousGame.totalJoined} </div>

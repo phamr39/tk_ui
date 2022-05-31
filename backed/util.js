@@ -32,6 +32,7 @@ export async function initContract() {
             'get_current_game',
             'buy_ticket',
             'end_game',
+            'get_user_ticket'
         ],
         sender: walletConnection.getAccountId(),
     });
