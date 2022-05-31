@@ -1,7 +1,4 @@
-// const CONTRACT_NAME = 'xtest3.testnet';
-const CONTRACT_NAME = 'neutrino.testnet';
-// const CONTRACT_NAME = 'mtoan2193.near';
-
+const CONTRACT_NAME = 'lottery_game.testnet';
 
 function getConfig(env) {
     switch (env) {
