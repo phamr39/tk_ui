@@ -84,7 +84,8 @@ const Lottery = () => {
                         });
                     }
                     setTimeout(() => {
-                        router.push('/lottery');
+                        // router.push('/lottery');
+                        router.reload();
                     }, 3000)
                 })
                 .catch((err) => {
@@ -186,6 +187,11 @@ const Lottery = () => {
     }
 
     const onBuyTicket = (number) => {
+        const { contract, walletConnection } = wallet;
+        const userId = walletConnection.getAccountId();
+        if (userId === '') {
+            onRequestConnectWallet();
+        }
         if (number === '' || number < 0 || number >= 100) {
             onShowResult({
                 type: 'error',
@@ -197,7 +203,6 @@ const Lottery = () => {
                 msg: 'There is no game available to play.',
             });
         } else {
-            const { contract } = wallet;
             setOpenLoading(true);
             const ticket_price = utils.format.parseNearAmount(DEFAULT_TICKET_PRICE);
             contract
@@ -249,6 +254,55 @@ const Lottery = () => {
         });
     };
 
+    const onStartGame = () => {
+        const { contract } = wallet;
+        setOpenLoading(true);
+        contract
+            ?.new_game?.({})
+            .then((data) => {
+                setOpenLoading(false);
+                if (data) {
+                    onShowResult({
+                        type: 'success',
+                        msg: 'Game has been started! Reload in 3 seconds.',
+                    });
+                    setTimeout(() => {
+                        router.reload();
+                    }, 3000);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                onShowResult({
+                    type: 'error',
+                    msg: 'Something went wrong, please try again. Reload in 3 seconds.',
+                });
+                setTimeout(() => {
+                    router.reload();
+                }, 3000);
+            });
+    }
+
+    const onEndGame = () => {
+        const { contract } = wallet;
+        setOpenLoading(true);
+        contract
+            ?.end_game?.({})
+            .then((data) => {
+                setOpenLoading(false);
+                if (data) {
+                    router.push('/lottery');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                onShowResult({
+                    type: 'error',
+                    msg: 'Something went wrong, please try again.',
+                });
+            });
+    }
+
     const onRequestConnectWallet = () => {
         const { nearConfig, walletConnection } = wallet;
         walletConnection?.requestSignIn?.(nearConfig?.contractName);
@@ -266,10 +320,24 @@ const Lottery = () => {
                     <div>If there are more than 1 winner, the coin/token will be shared.</div>
                 </div>
                 {isOwner ? (
-                    <div className={styles.root}>
-                        <button className={styles.button_admin} >
-                            Start Game
-                        </button>
+                    <div>
+                        {currentGame ? (
+                            <div>
+                                <div className={styles.root}>
+                                    <button className={styles.button_admin} onClick={() => onEndGame()}>
+                                        End Game
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <div className={styles.root}>
+                                    <button className={styles.button_admin} onClick={() => onStartGame()}>
+                                        Start Game
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div>
@@ -339,7 +407,7 @@ const Lottery = () => {
                     <div>
                         <div className={styles.current_game_info}>Opened At: {previousGame.startTime} </div>
                         <div className={styles.current_game_info}>Closed At: {previousGame.endTime} </div>
-                        <div className={styles.current_game_info}>Winner Name: {previousGame.winnerName}</div>
+                        <div className={styles.current_game_info}>Winners Name: {previousGame.winnerName}</div>
                         <div className={styles.current_game_info}>Winner Number: {previousGame.winnerNumber} </div>
                         <div className={styles.current_game_info}>Total Reward: {previousGame.totalReward} NEAR </div>
                         <div className={styles.current_game_info}>Total Participants: {previousGame.totalJoined} </div>
