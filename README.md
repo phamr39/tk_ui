@@ -1,7 +1,7 @@
 # Project Information: 
 Demo: [https://neariot.xyz](https://neariot.xyz).\
 Smart Contract: [https://github.com/phamr39/tk_contract](https://github.com/phamr39/tk_contract).\
-UI: [https://github.com/phamr39/tk_ui](https://github.com/phamr39/tk_ui).\
+UI: [https://github.com/phamr39/tk_ui](https://github.com/phamr39/tk_ui).
 
 # Getting Started with Create React App
 
