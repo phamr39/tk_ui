@@ -1,14 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useLayoutEffect, useEffect, useRef } from 'react';
+import { useState, useLayoutEffect, useEffect } from 'react';
 import styles from './Lottery.module.scss';
-import SearchIcon from '@mui/icons-material/Search';
-import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useRouter } from 'next/router';
-import ModalShare from '../../components/Share';
 import { useSelector } from 'react-redux';
 import Notify from '../../components/Notify';
 import { utils, providers } from 'near-api-js';
@@ -84,8 +77,7 @@ const Lottery = () => {
                         });
                     }
                     setTimeout(() => {
-                        // router.push('/lottery');
-                        router.reload();
+                        router.push('/home');
                     }, 3000)
                 })
                 .catch((err) => {
@@ -234,17 +226,6 @@ const Lottery = () => {
         } catch {
             return 'unknow';
         }
-    };
-
-    const onCloseModalShare = () => {
-        setModalShare(false);
-    };
-
-    const onGetSharedLink = (id, name) => {
-        const uri = new URL(window.location.href);
-        const { origin } = uri;
-        setLink({ link: `${origin}/event/event-detail?id=${id}`, name });
-        setModalShare(true);
     };
 
     const onSuccess = () => {
