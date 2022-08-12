@@ -2,12 +2,12 @@
     --color-primary: #23262f;
     --color-secondary: #777e90;
     --color-danger: #ff3c3c;
-    --color-link: #0e78f5;
-    --color-active: #3b71fe;
+    --color-link: #27292c;
+    --color-active: #7bc992;
     --color-border: #c5ccdf;
     --color-text-button: #ffffff;
-    --color-gradient: linear-gradient(135deg, #3b71fe, #0bd7f7);
-    --color-gradient-secondary: linear-gradient(135deg, #2cc9ff, #57eae9);
+    --color-gradient: linear-gradient(135deg, #6cc064, #5d9268);
+    --color-gradient-secondary: linear-gradient(135deg, #3e8552, #335338);
     --color-gradient-secondary-mirror: linear-gradient(135deg, #57eae9, #2cc9ff);
     --color-gradient-third: linear-gradient(180deg, #ff881f 0%, #fb6d23 100%, #fb6d23 100%);
     --color-boxshadow: rgb(0 0 0 / 8%) 0px 20px 27px 0px;
@@ -30,7 +30,7 @@ body {
 }
 
 .form_bg {
-    background: #f6f6f6 no-repeat center top;
+    background: #b37348 no-repeat center top;
     background-image: url(../public/bg1.jpg);
     background-size: cover;
     width: 100%;

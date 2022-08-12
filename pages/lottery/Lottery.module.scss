@@ -334,11 +334,46 @@
     font-style: italic;
 }
 
-.current_game_info {
+// .current_game_info {
+//     margin: 10px 1em 10px;
+//     color: var(--color-secondary);
+//     font-style: italic;
+//     width: 60%;
+//     height: auto;
+//     float: left;
+// }
+
+.game_info {
     margin: 10px 1em 10px;
     color: var(--color-secondary);
     font-style: italic;
 }
+
+#current_game_info {
+    margin: 10px 1em 10px;
+    color: var(--color-secondary);
+    font-style: italic;
+    width: 60%;
+    height: auto;
+    float: left;
+}
+
+#user_ticket_label {
+    margin: 10px 1em 10px;
+    color: var(--color-secondary);
+    font-style: italic;
+    width: 40%;
+    height: auto;
+    float: right;
+}
+
+
+.alert_message {
+    margin: 10px 1em 10px;
+    color: var(--color-secondary);
+    font-style: italic;
+}
+
 
 .text_description {
     font-size: 16px;
@@ -352,4 +387,12 @@
     font-weight: 600;
     text-transform: uppercase;
     text-align: center;
+}
+
+.previous_ticket_number {
+    margin: 10px 2em 10px;
+    font-size: 22px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: left;
 }
