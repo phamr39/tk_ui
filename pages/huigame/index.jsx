@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useLayoutEffect, useEffect } from 'react';
-import styles from './Lottery.module.scss';
+import styles from './Hui.module.scss';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import Notify from '../../components/Notify';
 import { utils, providers } from 'near-api-js';
-import { LotteryGameInfo } from '../home/descriptions';
 
 const Lottery = () => {
     const router = useRouter();
@@ -328,9 +327,9 @@ const Lottery = () => {
         <>
             <Notify openLoading={openLoading} openSnack={openSnack} alertType={alertType} snackMsg={snackMsg} onClose={onCloseSnack} />
             <div className={styles.root}>
-                <div className={styles.label_create}>Lottery Game: Find out the luckiest players!</div>
+                <div className={styles.label_create}>The Hui Game: Winner takes all!</div>
                 <br />
-                <div className={styles.text_description}>
+                {/* <div className={styles.text_description}>
                     <div>Your will deposite 1 NEAR for each number, each user can buy only one number in each lottery game.</div>
                     <div>10% of the total deposit will be returned to the dealer.</div>
                     <div>If there are more than 1 winner, the coin/token will be shared.</div>
@@ -426,7 +425,7 @@ const Lottery = () => {
                     <div>
                         <div className={styles.game_info}>There is no previous game</div>
                     </div>
-                )}
+                )} */}
             </div>
         </>
     );

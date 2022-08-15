@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Header.module.scss';
 import Account from '../Account';
 import NavItem from '../NavItem';
-import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined';
+import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { withRouter, useRouter } from 'next/router';
 
@@ -25,6 +25,30 @@ const Header = (props) => {
                 <div className={styles.logo_text} onClick={onLogoClick}>
                     Lottery Game
                     <FiberManualRecordIcon className={styles.logo_dot} />
+                </div>
+                <div className={styles.nav_item}>
+                    <NavItem
+                        icon={<DateRangeOutlinedIcon className={styles.nav_icon} />}
+                        content={'Lottery Game'}
+                        href={'/lottery'}
+                        actived={cPath.indexOf('/lottery') === 0}
+                    />
+                </div>
+                <div className={styles.nav_item}>
+                    <NavItem
+                        icon={<DateRangeOutlinedIcon className={styles.nav_icon} />}
+                        content={'The Hui Game'}
+                        href={'/'}
+                        actived={cPath.indexOf('/huigame') === 0}
+                    />
+                </div>
+                <div className={styles.nav_item}>
+                    <NavItem
+                        icon={<DateRangeOutlinedIcon className={styles.nav_icon} />}
+                        content={'How to play'}
+                        href={'/how_to_play'}
+                        actived={cPath.indexOf('/how_to_play') === 0}
+                    />
                 </div>
             </div>
             <div className={styles.account}>
