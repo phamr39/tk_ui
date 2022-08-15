@@ -17,8 +17,8 @@ const TheHuiGameInfo = {
 
 const Home = () => {
     const aContent = [
-        { id: 'lottery', title: 'How the Lottery Game work?', label: LotteryGameInfo.description, router: '/lottery', icon: 'calendar.svg' },
-        { id: 'thehui', title: 'How the Hui Game work?', label: TheHuiGameInfo.description, router: '/huigame', icon: 'calendar.svg' },
+        { id: 'lottery', title: 'How the Lottery Game work?', label: LotteryGameInfo.description, router: '/lottery', icon: 'faq.png' },
+        { id: 'thehui', title: 'How the Hui Game work?', label: TheHuiGameInfo.description, router: '/huigame', icon: 'faq.png' },
     ];
 
     const router = useRouter();

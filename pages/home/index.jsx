@@ -18,8 +18,8 @@ const TheHuiGameInfo = {
 
 const Home = () => {
     const aContent = [
-        { id: 'lottery', title: 'Lottery Game', label: 'Find out the luckiest players!', router: '/lottery', icon: 'calendar.svg', describe: LotteryGameInfo },
-        { id: 'thehui', title: 'The Hui Game', label: 'Winner takes all!', router: '/huigame', icon: 'calendar.svg', describe: TheHuiGameInfo },
+        { id: 'lottery', title: 'Lottery Game', label: 'Find out the luckiest players!', router: '/lottery', icon: 'lottery.png', describe: LotteryGameInfo },
+        { id: 'thehui', title: 'The Hui Game', label: 'Winner takes all!', router: '/huigame', icon: 'thehui.png', describe: TheHuiGameInfo },
     ];
 
     const router = useRouter();
@@ -43,6 +43,7 @@ const Home = () => {
                                     Go
                                 </button>
                             </div>
+                            <br/>
                         </div>
                     );
                 })}

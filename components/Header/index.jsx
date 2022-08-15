@@ -29,6 +29,14 @@ const Header = (props) => {
                 <div className={styles.nav_item}>
                     <NavItem
                         icon={<DateRangeOutlinedIcon className={styles.nav_icon} />}
+                        content={'Home'}
+                        href={'/home'}
+                        actived={cPath.indexOf('/home') === 0}
+                    />
+                </div>
+                <div className={styles.nav_item}>
+                    <NavItem
+                        icon={<DateRangeOutlinedIcon className={styles.nav_icon} />}
                         content={'Lottery Game'}
                         href={'/lottery'}
                         actived={cPath.indexOf('/lottery') === 0}
