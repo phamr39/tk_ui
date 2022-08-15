@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import Notify from '../../components/Notify';
 import { utils, providers } from 'near-api-js';
-import { LotteryGameInfo } from '../home/descriptions';
 
 const Lottery = () => {
     const router = useRouter();
