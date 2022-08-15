@@ -327,7 +327,7 @@ const Lottery = () => {
         <>
             <Notify openLoading={openLoading} openSnack={openSnack} alertType={alertType} snackMsg={snackMsg} onClose={onCloseSnack} />
             <div className={styles.root}>
-                <div className={styles.label_create}>Lottery Game: Winners takes all!</div>
+                <div className={styles.label_create}>123123</div>
                 <br />
                 <div className={styles.text_description}>
                     <div>Your will deposite 1 NEAR for each number, each user can buy only one number in each lottery game.</div>
