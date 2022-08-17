@@ -60,7 +60,7 @@ const Lottery = () => {
     }, [currentGame]);
 
     useEffect(() => {
-        if (currentGame?.id) {
+        if (previousGame?.id) {
             getUserPreviousTicket(previousGame.id);
         }
     }, [previousGame]);
@@ -146,16 +146,16 @@ const Lottery = () => {
         contract
             ?.get_current_game?.({})
             .then((data) => {
+                console.log('get_current_game', data);
                 if (data) {
                     let fee = data.fee / 1e24;
-                    let reward = fee * FEE_PERCENT * data.participants_number;
                     let crGame = {
                         id: data.id,
                         startTime: timeStampToDate(data.start_at),
                         endTime: timeStampToDate(data.end_at),
                         winnerName: !!data.end_at ? data.winners : 'This game has not finished!',
                         winnerNumber: !!data.end_at ? data.winner_number : 'This game has not finished!',
-                        totalReward: reward,
+                        totalReward: utils.format.formatNearAmount(data.total_prize),
                         totalJoined: data.participants_number,
                     };
                     setCurrentGame(crGame);
@@ -182,7 +182,7 @@ const Lottery = () => {
                         endTime: timeStampToDate(data.end_at),
                         winnerName: winnerList != '[]' ? winnerList : 'There is no one at all!',
                         winnerNumber: data.winner_number,
-                        totalReward: reward,
+                        totalReward: utils.format.formatNearAmount(data.total_prize),
                         totalJoined: data.participants_number,
                     };
                     setPreviousGame(crGame);
@@ -385,7 +385,7 @@ const Lottery = () => {
                             Winners Name: {currentGame.winnerName} {currentUser == currentGame.winnerName ? '(You)' : ''}
                         </div>
                         <div className={styles.game_info}>Winner Number: {currentGame.winnerNumber} </div>
-                        <div className={styles.game_info}>Total reward claimed: {currentGame.totalReward} NEAR </div>
+                        <div className={styles.game_info}>Total Reward: {currentGame.totalReward} NEAR </div>
                         <div className={styles.game_info}>Total participants: {currentGame.totalJoined} </div>
                     </div>
                 ) : (
